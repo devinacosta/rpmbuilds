@@ -25,7 +25,7 @@
 
 Name:           grafana
 Version:        10.1.5
-Release:        2.1
+Release:        2.1(?dist)
 Summary:        The open-source platform for monitoring and observability
 License:        AGPL-3.0-only
 Group:          System/Monitoring
