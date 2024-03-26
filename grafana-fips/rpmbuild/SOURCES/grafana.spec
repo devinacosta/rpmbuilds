@@ -23,9 +23,13 @@
 %global         GRAFANA_USER %{name}
 %global         GRAFANA_GROUP %{name}
 
+%if 0%{?rhel}
+%define os_suffix .el%{?rhel}
+%endif
+
 Name:           grafana
 Version:        10.1.5
-Release:        2.1(?dist)
+Release:        1%{?os_suffix}
 Summary:        The open-source platform for monitoring and observability
 License:        AGPL-3.0-only
 Group:          System/Monitoring
