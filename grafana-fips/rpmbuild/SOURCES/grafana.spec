@@ -28,8 +28,8 @@
 %endif
 
 Name:           grafana
-Version:        10.1.5
-Release:        1%{?os_suffix}
+Version:        10.4.5
+Release:        2%{?os_suffix} 
 Summary:        The open-source platform for monitoring and observability
 License:        AGPL-3.0-only
 Group:          System/Monitoring
@@ -50,6 +50,9 @@ Source8:         grafana.if
 
 # Source9 contains the systemd-sysusers configuration
 Source9:          grafana.sysusers
+
+Patch7:           0007-redact-weak-ciphers.patch
+
 
 BuildRequires:  fdupes
 BuildRequires:  git-core
@@ -84,6 +87,10 @@ SELinux policy module supporting grafana
 %setup -q -n grafana-%{version}
 %setup -q -T -D -a 1 -n grafana-%{version}
 
+# Patch (Remove Weak Ciphers)
+%patch -P 7 -p1
+
+
 # SELinux policy
 mkdir SELinux
 cp -p %{SOURCE6} %{SOURCE7} %{SOURCE8} SELinux
@@ -101,8 +108,9 @@ export IMPORTPATH=%{_builddir}/grafana-%{version}
 export BUILDFLAGS="-v -p 4 -x -buildmode=pie -mod=vendor"
 export GOPATH=%{_builddir}/go:%{_builddir}/contrib
 export GOBIN=/usr/local/go/bin
-export GOEXPERIMENT=opensslcrypto
+export GOEXPERIMENT=systemcrypto
 export GOFIPS=1
+
 wire gen -tags 'oss' ./pkg/server ./pkg/cmd/grafana-cli/runner
 
 # see grafana-X.Y.Z/pkg/build/cmd.go
@@ -260,6 +268,11 @@ fi
 
 
 %changelog
+* Wed Jul 10 2024 devin.acosta@ringcentral.com
+- Version 10.4.5:
+  Bugfixes:
+  * Initial Build of 10.4.5
+  * Go was upgraded to 1.21.10, FIPS compilation was changed.
 * Thu Mar 21 2024 devin.acosta@ringcentral.com
 - Version 10.1.5:
   Bugfixes:
